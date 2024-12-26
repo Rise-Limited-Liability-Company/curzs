@@ -1,0 +1,11 @@
+~/['BASICS.CLIB']['BUILD']:['1']['CONTENT']:['A library for Curzs that is for basic functions.']/~
+~/MATH/~
+func add [A,B]:[give_A+B];
+func sub [A,B]:[give_A-B];
+func mult [A,B]:[give_A*B];
+func div [A,B]:[give_A/B];
+~/USER-INPUT/~
+func multInput [A]:[give_A+pro];
+func instInput [A]:[give_A+key];
+~/PRINT/~
+func print [A]:[give_A+key];
