@@ -1,2 +1,6 @@
 receive [basics.clib];
-if [1,==,1] [add_[68,1]] [sub_[68,1]];
+type [number] [happy] [69];
+type [string] [sad] [68];
+type [pointer] [happy] [give_happy];
+type [pointer] [sad] [give_sad];
+if [1,==,1] [point_happy] [point_sad];

@@ -1,4 +1,4 @@
-~/['BASICS.CLIB']['BUILD']:['2']['CONTENT']:['A library for CURZS that is for basic functions.']/~
+~/['BASICS.CLIB']['BUILD']:['3']['CONTENT']:[A library for CURZS that is for basic functions.]/~
 ~/MATH/~
 func add [A,B] [give_A+B];
 func sub [A,B] [give_A-B];
@@ -9,4 +9,5 @@ func multInput [A] [give_A+pro];
 func instInput [A] [give_A+key];
 ~/PRINT/~
 func print [A] [give_A+key];
-¬/MISC/¬
+~/TYPE/~
+sFunc type [A] [B] [C] [sVar_A_B_C];

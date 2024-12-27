@@ -1,6 +1,6 @@
-~/['COLORS.CLIB']['BUILD']:['1']['CONTENT']:['A library for CURZS that is for color functions.']/~
+~/['COLORS.CLIB']['BUILD']:['2']['CONTENT']:['A library for CURZS that is for color functions.']/~
 ~/COLORS/~
-type red [string] ['#ff0000'];
-type green [string] ['#00ff00'];
-type blue [string] ['#0000ff'];
-type yellow [string] ['#ffff00'];
+type [string] ['#ff0000'];
+type [string] ['#00ff00'];
+type [string] ['#0000ff'];
+type [string] ['#ffff00'];

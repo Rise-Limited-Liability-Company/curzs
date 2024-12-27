@@ -7,7 +7,7 @@ const nodeJs = {
 }
 const curzs =
 {
-    build: 1
+    build: 2
     ,
     line: 0
     ,
@@ -23,6 +23,8 @@ const curzs =
     end: false
     ,
     variables: {}
+    ,
+    pointers: {}
     ,
     functions: {}
     ,
@@ -52,6 +54,121 @@ const curzs =
         if (tokens[0] == 'off' && tokens[1] == '[curzs];') {
             this.end = true
             return `[CURZS:LINE:${this.line}]:['Closed CURZS']`
+        }
+        if (tokens[0] == 'give' && tokens[1]) {
+            if (tokens[1] in this.variables) {
+                return this.variables[tokens[1].toString()]
+            } else {
+                return tokens[1]
+            }
+        }
+        if (tokens[0] == 'type' && tokens[1] == 'string' && tokens[2] && tokens[3]) {
+            if (this.packageEnabled.basics == true) {
+                const unChecked = tokens[2].toString()
+                if (typeof(unChecked) == 'string') {
+                    if (unChecked.startsWith('[') && unChecked.endsWith(']')) {
+                        const a1 = unChecked.replace('[','').toString()
+                        const a2 = a1.replace(']','').toString()
+                        const a3 = a2.replace(';','').toString()
+                        const string = a3
+                        try {
+                            if (string in this.variables) {
+                                return `[CURZS:LINE:${this.line}]:['Already created ${string}']`
+                            } else {
+                                const unChecked2 = tokens[3].toString()
+                                if (unChecked2.startsWith('[') && unChecked2.endsWith('];')) {
+                                    const b1 = unChecked2.replace('[','').toString()
+                                    const b2 = b1.replace('];','').toString()
+                                    this.variables[string] = b2
+                                }
+                            }
+                        } catch (error) {
+                            return `[CURZS:LINE:${this.line}]:['Invalid String']`
+                        }
+                    }
+                }
+            } else {
+                return `[CURZS:LINE:${this.line}]:['Invalid Function']`
+            }
+        }
+        if (tokens[0] == 'type' && tokens[1] == 'number' && tokens[2] && tokens[3]) {
+            if (this.packageEnabled.basics == true) {
+                const unChecked = tokens[2].toString()
+                if (typeof(unChecked) == 'string') {
+                    if (unChecked.startsWith('[') && unChecked.endsWith(']')) {
+                        const a1 = unChecked.replace('[','').toString()
+                        const a2 = a1.replace(']','').toString()
+                        const a3 = a2.replace(';','').toString()
+                        const number = a3
+                        try {
+                            if (number in this.variables) {
+                                return `[CURZS:LINE:${this.line}]:['Already created ${number}']`
+                            } else {
+                                const unChecked2 = tokens[3].toString()
+                                if (unChecked2.startsWith('[') && unChecked2.endsWith('];')) {
+                                    const b1 = unChecked2.replace('[','').toString()
+                                    const b2 = b1.replace('];','').toString()
+                                    this.variables[number] = parseInt(b2)
+                                }
+                            }
+                        } catch (error) {
+                            return `[CURZS:LINE:${this.line}]:['Invalid Number']`
+                        }
+                    }
+                }
+            } else {
+                return `[CURZS:LINE:${this.line}]:['Invalid Function']`
+            }
+        }
+        if (tokens[0] == 'type' && tokens[1] == 'pointer' && tokens[2] && tokens[3]) {
+            if (this.packageEnabled.basics == true) {
+                const unChecked = tokens[2].toString()
+                if (typeof(unChecked) == 'string') {
+                    if (unChecked.startsWith('[') && unChecked.endsWith(']')) {
+                        const a1 = unChecked.replace('[','').toString()
+                        const a2 = a1.replace(']','').toString()
+                        const a3 = a2.replace(';','').toString()
+                        const pointer = a3
+                        try {
+                            if (pointer in this.pointers) {
+                                return `[CURZS:LINE:${this.line}]:['Already created ${pointer}']`
+                            } else {
+                                const unChecked2 = tokens[3].toString()
+                                if (unChecked2.startsWith('[') && unChecked2.endsWith('];')) {
+                                    const b1 = unChecked2.replace('[','').toString()
+                                    const b2 = b1.replace('];','').toString()
+                                    const b3 = b2.replace('_',' ').toString()
+                                    this.pointers[pointer] = b3
+                                }
+                            }
+                        } catch (error) {
+                            return `[CURZS:LINE:${this.line}]:['Invalid Pointer']`
+                        }
+                    }
+                }
+            } else {
+                return `[CURZS:LINE:${this.line}]:['Invalid Function']`
+            }
+        }
+        if (tokens[0] == 'point' && tokens[1]) {
+            if (this.packageEnabled.basics == true) {
+                const unChecked = tokens[1].toString()
+                if (typeof(unChecked) == 'string') {
+                    if (unChecked.startsWith('[') && unChecked.endsWith('];')) {
+                        const a1 = unChecked.replace('[','').toString()
+                        const a2 = a1.replace(']','').toString()
+                        const a3 = a2.replace(';','').toString()
+                        const pointed = a3
+                        try {
+                            this.evaluator(this.parser(`type [pointer] [${pointed}];`))
+                        } catch (error) {
+                            return `[CURZS:LINE:${this.line}]:['Invalid Pointer']`
+                        }
+                    }
+                }
+            } else {
+                return `[CURZS:LINE:${this.line}]:['Invalid Function']`
+            }
         }
         if (tokens[0] == 'if' && tokens[1] && tokens[2] && tokens[3]) {
             if (this.packageEnabled.basics == true) {
@@ -243,22 +360,22 @@ const curzs =
         }
     }
     ,
-    interpreter() {
+    idle() {
         this.line++
         const input = nodeJs.prompt('%>')
         this.singleLine(input)
         if (this.end == false) {
-            this.interpreter()
+            this.idle()
         } else {
             return
         }
     }
     ,
-    manual(file) {
-        if (typeof(file) == 'string') {
+    interpreter(fts) {
+        if (typeof(fts) == 'string') {
             try {
-                const file = nodeJs.fs.readFileSync(`${file}`, 'utf8')
-                this.evaluator(`${file}`)
+                const file = nodeJs.fs.readFileSync(fts, 'utf-8')
+                this.evaluator(file)
             } catch (error) {
                 this.evaluator(`[CURZS:LINE:${this.line}]:['Invalid Path or File']`)
             }
@@ -268,9 +385,9 @@ const curzs =
 
 curzs.evaluator(`['CURZS']['BUILD']:['${curzs.build.toString()}']`)
 
-if (process.argv[2] == 'interpreter') {
-    curzs.interpreter()
+if (process.argv[2] == 'idle') {
+    curzs.idle()
 }
-if (process.argv[2] != 'interpreter' && process.argv[2] != null) {
-    curzs.manual(process.argv[2])
+if (process.argv[2] != 'idle' && process.argv[2] != null) {
+    curzs.interpreter(process.argv[2])
 }
