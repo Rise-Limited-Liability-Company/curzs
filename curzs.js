@@ -6,10 +6,12 @@ const nodeJs = {
     prompt : require('prompt-sync')({sigint: true})
     ,
     process : require('process')
+    ,
+    keycode : require('keycode')
 }
 const curzs =
 {
-    build: 3
+    build: 4
     ,
     line: 0
     ,
@@ -118,16 +120,8 @@ const curzs =
                                 const unChecked2 = tokens[3].toString()
                                 if (unChecked2.startsWith('[') && unChecked2.endsWith('];')) {
                                     const b1 = unChecked2.replace('[','').toString()
-                                    const b2 = b1.replace('];','').toString().split('~')
-                                    const split = b2.split('~')
-                                    let result
-                                    this.evaluator(split)
-                                    this.evaluator(split[0])
-                                    for (;count < (split.length);) {
-                                        result = split[count].toString() + split[count + 1].toString()
-                                        count++
-                                    }
-                                    this.variables[string] = result
+                                    const b2 = b1.replace('];','').toString()
+                                    this.variables[string] = b2
                                     return `[CURZS:LINE:${this.line}]:['Created String: ${string}']`
                                 }
                             }
@@ -224,6 +218,91 @@ const curzs =
             }
         }
         if (tokens[0] == 'if' && tokens[1] && tokens[2] && tokens[3]) {
+            if (this.packageEnabled.basics == true) {
+                const unChecked = tokens[1].toString()
+                if (typeof(unChecked) == 'string') {
+                    if (unChecked.startsWith('[') && unChecked.endsWith(']')) {
+                        const a1 = unChecked.replace('[','').toString()
+                        const a2 = a1.replace(']','').toString()
+                        const condition = a2.split(',')
+                        try {
+                            const A = condition[0]
+                            const B = condition[1]
+                            const C = condition[2]
+                            if (B == '==') {
+                                if (A == C) {
+                                    const unChecked2 = tokens[2].toString()
+                                    const b1 = unChecked2.replace('[','').toString()
+                                    const b2 = b1.replace(']','').toString()
+                                    const b3 = b2.replace('_',' ').toString()
+                                    const tokens2 = b3.split(' ')
+                                    tokens2[0] = tokens2[0]
+                                    tokens2[1] = tokens2[1] + ';'
+                                    return this.parser(tokens2)
+                                } else {
+                                    this.evaluator(2)
+                                    const unChecked2 = tokens[3].toString()
+                                    const b1 = unChecked2.replace('[','').toString()
+                                    const b2 = b1.replace('];','').toString()
+                                    const b3 = b2.replace('_',' ').toString()
+                                    this.evaluator(this.parser(b3.split(' ')))
+                                }
+                            }
+                            if (B == '!=') {
+                                if (A != C) {
+                                    const unChecked2 = tokens[2].toString()
+                                    const b1 = unChecked2.replace('[','').toString()
+                                    const b2 = b1.replace(']','').toString()
+                                    const b3 = b2.replace('_',' ').toString()
+                                    this.evaluator(this.parser(b3.split(' ')))
+                                } else {
+                                    const unChecked2 = tokens[3].toString()
+                                    const b1 = unChecked2.replace('[','').toString()
+                                    const b2 = b1.replace('];','').toString()
+                                    const b3 = b2.replace('_',' ').toString()
+                                    this.evaluator(this.parser(b3.split(' ')))
+                                }
+                            }
+                            if (B == '>') {
+                                if (A == C) {
+                                    const unChecked2 = tokens[2].toString()
+                                    const b1 = unChecked2.replace('[','').toString()
+                                    const b2 = b1.replace(']','').toString()
+                                    const b3 = b2.replace('_',' ').toString()
+                                    this.evaluator(this.parser(b3.split(' ')))
+                                } else {
+                                    const unChecked2 = tokens[3].toString()
+                                    const b1 = unChecked2.replace('[','').toString()
+                                    const b2 = b1.replace('];','').toString()
+                                    const b3 = b2.replace('_',' ').toString()
+                                    this.evaluator(this.parser(b3.split(' ')))
+                                }
+                            }
+                            if (B == '<') {
+                                if (A == C) {
+                                    const unChecked2 = tokens[2].toString()
+                                    const b1 = unChecked2.replace('[','').toString()
+                                    const b2 = b1.replace(']','').toString()
+                                    const b3 = b2.replace('_',' ').toString()
+                                    this.evaluator(this.parser(b3.split(' ')))
+                                } else {
+                                    const unChecked2 = tokens[3].toString()
+                                    const b1 = unChecked2.replace('[','').toString()
+                                    const b2 = b1.replace('];','').toString()
+                                    const b3 = b2.replace('_',' ').toString()
+                                    this.evaluator(this.parser(b3.split(' ')))
+                                }
+                            }
+                        } catch (error) {
+                            return `[CURZS:LINE:${this.line}]:['Invalid Condition']`
+                        }
+                    }
+                }
+            } else {
+                return `[CURZS:LINE:${this.line}]:['Invalid Function']`
+            }
+        }
+        if (tokens[0] == 'loop' && tokens[1] && tokens[2] && tokens[3]) {
             if (this.packageEnabled.basics == true) {
                 const unChecked = tokens[1].toString()
                 if (typeof(unChecked) == 'string') {
