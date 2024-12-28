@@ -11,7 +11,7 @@ const nodeJs = {
 }
 const curzs =
 {
-    build: 4
+    build: 5
     ,
     line: 0
     ,
@@ -26,9 +26,13 @@ const curzs =
     ,
     end: false
     ,
+    event: null
+    ,
     variables: {}
     ,
     pointers: {}
+    ,
+    pointers2: {}
     ,
     functions: {}
     ,
@@ -87,8 +91,8 @@ const curzs =
                         const b1 = unChecked2.replace('[','').toString()
                         const b2 = b1.replace('];','').toString()
                         try {
-                            this.evaluator(`[CURZS:LINE:${this.line}]:['Created Prompt']`)
-                            const ask = nodeJs.prompt(a2.replace('~',' ').toString())
+                            this.evaluator(`[CURZS:LINE:${this.line}]:['Created Multiple Input']`)
+                            const ask = nodeJs.prompt(a2)
                             this.variables[b2] = ask
                             return `[CURZS:LINE:${this.line}]:['Wrote Text To Variable']`
                         } catch (error) {
@@ -182,8 +186,12 @@ const curzs =
                                     const b1 = unChecked2.replace('[','').toString()
                                     const b2 = b1.replace('];','').toString()
                                     const b3 = b2.replace('_',' ').toString()
-                                    const b4 = b3.split(' ')
-                                    this.pointers[pointer] = b4
+                                    const b4 = b3.replace('~',' ').toString()
+                                    const b5 = b4.replace(',','').toString().split(' ')
+                                    const fh = `${b5[0]} ${b5[1]}`
+                                    const sh = `${b5[2]} ${b5[3]}`
+                                    this.pointers[pointer] = `${fh}`
+                                    this.pointers2[pointer] = `${sh}`
                                     return `[CURZS:LINE:${this.line}]:['Created Pointer: ${pointer}']`
                                 }
                             }
@@ -207,7 +215,8 @@ const curzs =
                         const pointed = a3
                         try {
                             this.evaluator(`[CURZS:LINE:${this.line}]:['Pointed To ${pointed}']`)
-                            return `${this.parser(this.pointers[pointed])}`
+                            this.evaluator(`${this.parser(this.pointers[pointed])}`)
+                            return `${this.parser(this.pointers2[pointed])}`
                         } catch (error) {
                             return `[CURZS:LINE:${this.line}]:['Invalid Pointer']`
                         }
@@ -302,7 +311,7 @@ const curzs =
                 return `[CURZS:LINE:${this.line}]:['Invalid Function']`
             }
         }
-        if (tokens[0] == 'loop' && tokens[1] && tokens[2] && tokens[3]) {
+        if (tokens[0] == 'loop' && tokens[1] && tokens[2]) {
             if (this.packageEnabled.basics == true) {
                 const unChecked = tokens[1].toString()
                 if (typeof(unChecked) == 'string') {
