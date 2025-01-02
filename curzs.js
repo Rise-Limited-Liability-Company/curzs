@@ -175,7 +175,7 @@ const curzs =
                     if (unChecked.startsWith('[') && unChecked.endsWith(']')) {
                         const a1 = unChecked.replace('[','').toString()
                         const a2 = a1.replace(']','').toString()
-                        const a3 = a2.replace(';','').toString()
+                        const a3 = a2//.replace(';','').toString()
                         const pointer = a3
                         try {
                             if (pointer in this.pointers) {
@@ -193,6 +193,42 @@ const curzs =
                                     this.pointers[pointer] = `${fh}`
                                     this.pointers2[pointer] = `${sh}`
                                     return `[CURZS:LINE:${this.line}]:['Created Pointer: ${pointer}']`
+                                }
+                            }
+                        } catch (error) {
+                            return `[CURZS:LINE:${this.line}]:['Invalid Pointer']`
+                        }
+                    }
+                }
+            } else {
+                return `[CURZS:LINE:${this.line}]:['Invalid Function']`
+            }
+        }
+        if (tokens[0] == 'type' && tokens[1] == '[array]' && tokens[2] && tokens[3]) {
+            if (this.packageEnabled.basics == true) {
+                const unChecked = tokens[2].toString()
+                if (typeof(unChecked) == 'string') {
+                    if (unChecked.startsWith('[') && unChecked.endsWith(']')) {
+                        const a1 = unChecked.replace('[','').toString()
+                        const a2 = a1.replace(']','').toString()
+                        const a3 = a2//.replace(';','').toString()
+                        const pointer = a3
+                        try {
+                            if (pointer in this.pointers) {
+                                return `[CURZS:LINE:${this.line}]:['Already Created Pointer: ${pointer}']`
+                            } else {
+                                const unChecked2 = tokens[3].toString()
+                                if (unChecked2.startsWith('[') && unChecked2.endsWith('];')) {
+                                    const b1 = unChecked2.replace('[','').toString()
+                                    const b2 = b1.replace('];','').toString()
+                                    const b3 = b2.replace('_',' ').toString()
+                                    const b4 = b3.replace('~',' ').toString()
+                                    const b5 = b4.replace(',','').toString().split(' ')
+                                    const fh = `${b5[0]} ${b5[1]}`
+                                    const sh = `${b5[2]} ${b5[3]}`
+                                    this.pointers[pointer] = `${fh}`
+                                    this.pointers2[pointer] = `${sh}`
+                                    return `[CURZS:LINE:${this.line}]:['Created Array: ${pointer}']`
                                 }
                             }
                         } catch (error) {
